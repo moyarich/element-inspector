@@ -1,0 +1,452 @@
+.docking-panel-root {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2147483646;
+}
+
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+
+.docking-panel-root *,
+.docking-panel-root *::before,
+.docking-panel-root *::after {
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Panel
+   ========================================================================== */
+
+.panel {
+  position: fixed;
+  display: none;
+  z-index: 2;
+  pointer-events: auto;
+  overflow: hidden;
+  padding: 10px;
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 20px 25px -5px var(--shadow-lg),
+    0 8px 10px -6px var(--shadow-lg);
+
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+/* Floating panel */
+.panel.dock-float {
+  left: var(--float-left, 16px);
+  bottom: var(--float-bottom, 16px);
+  width: var(--panel-w, 780px);
+  height: var(--panel-h, 580px);
+  min-width: 320px;
+  min-height: 340px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  border-radius: calc(var(--radius) + 4px);
+}
+
+/* Left dock */
+.panel.dock-left {
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--panel-w, 420px);
+  max-width: calc(100vw - 32px);
+  min-width: 120px;
+  border-left: none;
+  border-radius: 0 calc(var(--radius) + 4px) calc(var(--radius) + 4px) 0;
+}
+
+/* Right dock */
+.panel.dock-right {
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--panel-w, 420px);
+  max-width: calc(100vw - 32px);
+  min-width: 120px;
+  border-right: none;
+  border-radius: calc(var(--radius) + 4px) 0 0 calc(var(--radius) + 4px);
+}
+
+/* Bottom dock */
+.panel.dock-bottom {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--panel-h, 320px);
+  min-height: 140px;
+  max-height: calc(100vh - 32px);
+  border-bottom: none;
+  border-radius: calc(var(--radius) + 4px) calc(var(--radius) + 4px) 0 0;
+}
+
+/* ==========================================================================
+   Snap Preview
+   ========================================================================== */
+
+.snap-preview {
+  position: fixed;
+  display: none;
+  pointer-events: none;
+  z-index: 1;
+  background: var(--brand-muted);
+  border: 2px dashed var(--brand-border);
+  box-shadow: inset 0 0 0 1px var(--brand-muted-strong);
+}
+
+.snap-preview.left {
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 420px;
+}
+
+.snap-preview.right {
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 420px;
+}
+
+.snap-preview.bottom {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 320px;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 54px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
+  color: var(--foreground);
+  user-select: none;
+}
+
+.header-title-slot {
+  min-width: 0;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--brand);
+  box-shadow: 0 0 10px var(--brand-glow);
+}
+
+.title {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* Selected element text */
+.selector {
+  min-width: 0;
+  flex: 1;
+  padding: 4px 8px;
+  border: 1px solid var(--brand-border);
+  border-radius: calc(var(--radius) - 5px);
+  background: var(--brand-muted);
+  color: var(--brand);
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+/* ==========================================================================
+   Drag Strip
+   ========================================================================== */
+
+.drag-strip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 14px;
+}
+
+[data-panel-drag-handle] {
+  pointer-events: auto;
+  cursor: grab;
+}
+
+[data-panel-drag-handle]:active {
+  cursor: grabbing;
+}
+
+/* ==========================================================================
+   Dock Buttons
+   ========================================================================== */
+
+.dock-picker {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.dock-btn {
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.dock-btn:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.dock-btn:active {
+  transform: translateY(0.5px);
+}
+
+.dock-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--card),
+    0 0 0 4px var(--ring);
+}
+
+.dock-btn[data-state="active"],
+.dock-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.dock-btn[data-state="active"]:hover,
+.dock-btn.active:hover {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  opacity: 0.9;
+}
+
+.dock-btn svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+  pointer-events: none;
+}
+
+.close-btn {
+  margin-left: 6px;
+}
+
+/* ==========================================================================
+   Content
+   ========================================================================== */
+
+.content {
+  position: relative;
+  z-index: 1;
+  height: calc(100% - 54px);
+  min-height: 0;
+  overflow: auto;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* ==========================================================================
+   Resize Handles
+   ========================================================================== */
+
+.resize-corner {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 21;
+
+  width: 14px;
+  height: 14px;
+
+  pointer-events: auto;
+  touch-action: none;
+  cursor: nwse-resize;
+  opacity: 0.45;
+
+  background:
+    linear-gradient(
+      135deg,
+      transparent 0 40%,
+      var(--resize-mark) 40% 55%,
+      transparent 55%
+    ),
+    linear-gradient(
+      135deg,
+      transparent 0 60%,
+      var(--resize-mark) 60% 75%,
+      transparent 75%
+    );
+}
+
+.resize-corner:hover {
+  opacity: 0.8;
+}
+
+.panel:not(.dock-float) .resize-corner {
+  display: none;
+}
+
+/* Docked resize handles */
+.resize-edge {
+  position: absolute;
+  z-index: 20;
+
+  background: transparent;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+/* Helpful visual hover affordance without changing layout */
+.resize-edge::after {
+  content: "";
+  position: absolute;
+  opacity: 0;
+  background: var(--brand);
+  transition: opacity 150ms ease;
+}
+
+.resize-edge:hover::after {
+  opacity: 0.45;
+}
+
+/* Left dock resize handle */
+.panel.dock-left .resize-edge {
+  top: 0;
+  right: -4px;
+  width: 12px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+.panel.dock-left .resize-edge::after {
+  top: 0;
+  right: 4px;
+  width: 2px;
+  height: 100%;
+}
+
+/* Right dock resize handle */
+.panel.dock-right .resize-edge {
+  top: 0;
+  left: -4px;
+  width: 12px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+.panel.dock-right .resize-edge::after {
+  top: 0;
+  left: 4px;
+  width: 2px;
+  height: 100%;
+}
+
+/* Bottom dock resize handle */
+.panel.dock-bottom .resize-edge {
+  top: -4px;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  cursor: ns-resize;
+}
+
+.panel.dock-bottom .resize-edge::after {
+  top: 4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+}
+
+/* Floating panels use corner resizing */
+.panel.dock-float .resize-edge {
+  display: none;
+}
+
+/* ==========================================================================
+   Scrollbars
+   ========================================================================== */
+
+.content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.content::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .dock-btn,
+  .resize-edge::after {
+    transition-duration: 0.01ms !important;
+  }
+}

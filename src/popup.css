@@ -1,0 +1,424 @@
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 320px;
+  background: var(--background);
+  color: var(--foreground);
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.popup-shell {
+  padding: 12px;
+  background: var(--background);
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.popup-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: start;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.popup-title-wrap {
+  min-width: 0;
+}
+
+.popup-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.popup-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: var(--brand-muted);
+  color: var(--brand);
+  font-size: 12px;
+  line-height: 1;
+}
+
+h1 {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 18px;
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+
+.popup-title-wrap p {
+  max-width: 230px;
+  margin: 5px 0 0;
+  color: var(--muted-foreground);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.popup-actions-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+button {
+  font: inherit;
+}
+
+.icon-btn {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--background);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.icon-btn svg {
+  width: 17px;
+  height: 17px;
+}
+
+.icon-btn:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.icon-btn:active,
+.btn-brand:active {
+  transform: translateY(0.5px);
+}
+
+.icon-btn:focus-visible,
+.btn-brand:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--ring);
+}
+
+/* ==========================================================================
+   Main
+   ========================================================================== */
+
+.popup-main {
+  display: grid;
+  gap: 8px;
+  padding-top: 12px;
+}
+
+.inspect-action-wrap {
+  position: relative;
+}
+
+/* ==========================================================================
+   Primary Inspect Button
+   ========================================================================== */
+
+.btn-brand {
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--brand);
+  border-radius: calc(var(--radius) - 3px);
+  background: var(--brand);
+  color: var(--brand-foreground);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 8px 14px -12px var(--brand);
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease,
+    opacity 150ms ease;
+}
+
+.btn-brand:hover {
+  background: var(--brand-hover);
+  border-color: var(--brand-hover);
+  color: var(--brand-foreground);
+}
+
+.btn-brand:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.btn-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.9;
+}
+
+/* Active = stop mode, controlled by parent container */
+
+.popup-shell[data-inspector-state="active"] #toggle-inspector,
+.popup-shell.is-active #toggle-inspector {
+  background: var(--destructive);
+  border-color: var(--destructive);
+  color: var(--destructive-foreground);
+  box-shadow: 0 8px 14px -12px var(--destructive);
+}
+
+.popup-shell[data-inspector-state="active"] #toggle-inspector:hover,
+.popup-shell.is-active #toggle-inspector:hover {
+  opacity: 0.9;
+}
+
+.popup-shell[data-inspector-state="active"] #toggle-inspector .btn-dot,
+.popup-shell.is-active #toggle-inspector .btn-dot {
+  animation: pulse-dot 1.15s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   State Cards
+   ========================================================================== */
+
+.state-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 9px;
+  align-items: start;
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 3px);
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.state-card strong {
+  display: block;
+  margin: 0 0 2px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.state-card p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.state-dot {
+  width: 8px;
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 999px;
+  background: var(--muted-foreground);
+  box-shadow: 0 0 0 4px
+    color-mix(in srgb, var(--muted-foreground) 16%, transparent);
+}
+
+.state-card-active {
+  display: none;
+  border-color: var(--brand-border);
+  background: var(--brand-muted);
+}
+
+.state-card-active .state-dot {
+  background: var(--brand);
+  box-shadow: 0 0 0 4px var(--brand-muted);
+}
+
+.popup-shell[data-inspector-state="active"] .state-card-idle,
+.popup-shell.is-active .state-card-idle {
+  display: none;
+}
+
+.popup-shell[data-inspector-state="active"] .state-card-active,
+.popup-shell.is-active .state-card-active {
+  display: grid;
+}
+
+/* ==========================================================================
+   Inspect Button Hover Popover
+   ========================================================================== */
+
+.inspect-hover-popover {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  z-index: 10;
+  width: max-content;
+  max-width: 220px;
+  padding: 7px 9px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  font-size: 11.5px;
+  line-height: 1.3;
+  box-shadow:
+    0 10px 15px -3px var(--shadow-md),
+    0 4px 6px -4px var(--shadow-md);
+  opacity: 0;
+  transform: translateX(-50%) translateY(2px) scale(0.98);
+  pointer-events: none;
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.inspect-hover-popover::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 9px;
+  height: 9px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--popover);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.inspect-help-active {
+  display: none;
+}
+
+.inspect-action-wrap:hover .inspect-help-idle,
+.inspect-action-wrap:focus-within .inspect-help-idle {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+.popup-shell[data-inspector-state="active"] .inspect-help-idle,
+.popup-shell.is-active .inspect-help-idle {
+  display: none;
+}
+
+.popup-shell[data-inspector-state="active"] .inspect-help-active,
+.popup-shell.is-active .inspect-help-active {
+  display: block;
+}
+
+.popup-shell[data-inspector-state="active"]
+  .inspect-action-wrap:hover
+  .inspect-help-active,
+.popup-shell[data-inspector-state="active"]
+  .inspect-action-wrap:focus-within
+  .inspect-help-active,
+.popup-shell.is-active .inspect-action-wrap:hover .inspect-help-active,
+.popup-shell.is-active .inspect-action-wrap:focus-within .inspect-help-active {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* ==========================================================================
+   Status
+   Only use this for errors or temporary messages.
+   ========================================================================== */
+
+.status {
+  min-height: 0;
+  margin: 0;
+  padding: 8px 9px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.status:empty {
+  display: none;
+}
+
+/* ==========================================================================
+   Motion
+   ========================================================================== */
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+
+  .popup-shell[data-inspector-state="active"] #toggle-inspector .btn-dot,
+  .popup-shell.is-active #toggle-inspector .btn-dot {
+    animation: none;
+  }
+}

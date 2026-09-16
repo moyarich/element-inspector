@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Element Inspector</title>
+    <link rel="stylesheet" href="./theme.css" />
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+
+  <body>
+    <div class="popup-shell">
+      <header class="popup-header">
+        <div class="popup-title-wrap">
+          <div class="popup-eyebrow">
+            <span class="popup-mark">⌖</span>
+            <span>Inspector</span>
+          </div>
+
+          <h1>Element Inspector</h1>
+          <p>Inspect page elements and copy useful selector details.</p>
+        </div>
+
+        <div class="popup-actions-top">
+          <button
+            id="themeToggle"
+            class="icon-btn"
+            type="button"
+            title="Toggle theme"
+            aria-label="Toggle theme"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+              <path d="M12 3l0 18"></path>
+              <path d="M12 9l4.65 -4.65"></path>
+              <path d="M12 14.3l7.37 -7.37"></path>
+              <path d="M12 19.6l8.85 -8.85"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="popup-main">
+        <div class="inspect-action-wrap">
+          <button
+            id="toggle-inspector"
+            class="btn-brand"
+            type="button"
+            aria-pressed="false"
+            data-state="inactive"
+          >
+            <span class="btn-dot" aria-hidden="true"></span>
+            <span class="btn-label">Inspect Element</span>
+          </button>
+
+          <div class="inspect-hover-popover inspect-help-idle" role="tooltip">
+            Turn on element picking.
+          </div>
+
+          <div class="inspect-hover-popover inspect-help-active" role="tooltip">
+            Turn off element picking.
+          </div>
+        </div>
+
+        <section class="state-card state-card-active" aria-live="polite">
+          <span class="state-dot"></span>
+          <div>
+            <strong>Inspecting</strong>
+            <p>Return to the page and click an element.</p>
+          </div>
+        </section>
+
+        <p id="status" class="status">
+          Click Inspect Element, then choose an element on the page.
+        </p>
+      </main>
+    </div>
+
+    <script type="module" src="./popup.ts"></script>
+  </body>
+</html>

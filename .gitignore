@@ -1,0 +1,19 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+
+# Editor settings
+.vscode/
+
+
+# Build output
+dist/
+
+# Archives/Generated ZIP files
+*.zip
+zipfiles/*
+!zipfiles/.gitkeep

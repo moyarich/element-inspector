@@ -1,0 +1,53 @@
+{
+  "name": "@moyarich/element-inspector",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "dev": "npm run dev:chrome",
+    "dev:chrome": "cross-env TARGET=chrome vite build --watch --mode development",
+    "dev:firefox": "cross-env TARGET=firefox FF_ADDON_ID=element-inspector@moyarich.local vite build --watch --mode development",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:types": "npm run typecheck && npm run lint",
+    "build": "npm run build:chrome",
+    "build:chrome": "npm run lint:types && cross-env TARGET=chrome vite build",
+    "build:firefox": "npm run lint:types && cross-env TARGET=firefox FF_ADDON_ID=element-inspector@moyarich.local vite build",
+    "demo": "./scripts/run-demo-interactive.sh",
+    "demo:gif": "cross-env TARGET=chrome vite build --mode development && node demo/create-demo.mjs",
+    "demo:interactive": "./scripts/run-demo-interactive.sh",
+    "demo:run": "cross-env TARGET=chrome vite build --mode development && node demo/extension.smoke.mjs",
+    "demo:smoke": "cross-env TARGET=chrome vite build --mode development && node demo/extension.smoke.mjs --ci",
+    "chrome": "npm run build:chrome && web-ext run --source-dir dist --target chromium",
+    "firefox": "npm run build:firefox && web-ext run --source-dir dist"
+  },
+  "dependencies": {
+    "@jridgewell/trace-mapping": "^0.3.31",
+    "@types/node": "^25.9.2",
+    "@types/webextension-polyfill": "^0.12.5",
+    "dockview-core": "^6.6.1",
+    "highlight.js": "^11.11.1",
+    "js-beautify": "^1.15.4",
+    "monaco-editor": "^0.55.1",
+    "vite": "^8.0.16",
+    "webextension-polyfill": "^0.12.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/archiver": "^8.0.0",
+    "@types/chrome": "^0.1.43",
+    "@types/js-beautify": "^1.14.3",
+    "archiver": "^8.0.0",
+    "chalk": "^6.0.0",
+    "colors": "^1.4.0",
+    "cross-env": "^10.1.0",
+    "eslint": "^10.4.1",
+    "globals": "^17.6.0",
+    "jiti": "^2.7.0",
+    "puppeteer": "^25.5.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.60.1",
+    "web-ext": "^10.3.0"
+  }
+}

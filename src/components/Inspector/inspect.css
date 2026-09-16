@@ -1,0 +1,1012 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Toast
+   ========================================================================== */
+
+.inspector-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 30px;
+  z-index: 2147483655;
+
+  transform: translateX(-50%) translateY(12px);
+  opacity: 0;
+  pointer-events: none;
+
+  padding: 8px 14px;
+  border: 1px solid var(--brand-border);
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--popover);
+  color: var(--brand);
+
+  font:
+    500 12px system-ui,
+    sans-serif;
+
+  box-shadow:
+    0 10px 15px -3px var(--shadow-md),
+    0 4px 6px -4px var(--shadow-md);
+
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease;
+}
+
+.inspector-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ==========================================================================
+   Panel Base
+   ========================================================================== */
+
+.panel {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+}
+
+.header {
+  border-bottom: 1px solid var(--border);
+}
+
+.inspector-header-inspect-button {
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font:
+    600 11.5px system-ui,
+    sans-serif;
+  line-height: 1;
+  white-space: nowrap;
+
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.inspector-header-inspect-button:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.inspector-header-inspect-button:active {
+  transform: translateY(0.5px);
+}
+
+.inspector-header-inspect-button:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--ring);
+}
+
+/* ==========================================================================
+   Breadcrumb
+   ========================================================================== */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+
+  padding: 6px 14px;
+  overflow-x: auto;
+  white-space: nowrap;
+
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
+}
+
+.bc-btn {
+  padding: 3px 8px;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius) - 6px);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 10.5px;
+  white-space: nowrap;
+
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.bc-btn:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--border);
+}
+
+.bc-btn.current,
+.bc-btn[data-state="active"] {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+  font-weight: 600;
+}
+
+.bc-sep {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+/* ==========================================================================
+   Main Layout
+   ========================================================================== */
+
+.main {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.tabs {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 2px;
+
+  width: 128px;
+  padding: 10px 8px;
+  overflow-y: auto;
+
+  border-right: 1px solid var(--border);
+  background: var(--background);
+}
+
+.body {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+
+  padding: 14px;
+  background: var(--background);
+  color: var(--foreground);
+
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+/* ==========================================================================
+   Tabs
+   ========================================================================== */
+
+.tab-btn {
+  padding: 7px 10px;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius) - 4px);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+
+  font-size: 11.5px;
+  font-weight: 500;
+  text-align: left;
+  white-space: nowrap;
+
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.tab-btn:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.tab-btn.active,
+.tab-btn[data-state="active"] {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+  font-weight: 600;
+}
+
+.tab-btn:focus-visible,
+.bc-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--ring);
+}
+
+/* ========================================================================== 
+   Tab Panels
+   ========================================================================== */
+
+.inspector-tab-content {
+  display: block;
+  height: 100%;
+}
+
+.tab-panel {
+  display: none;
+  height: 100%;
+}
+
+.tab-panel.active,
+.tab-panel[data-state="active"] {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ==========================================================================
+   Toolbar / Buttons
+   ========================================================================== */
+
+.toolbar {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius) - 4px);
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.btn:active {
+  transform: translateY(0.5px);
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--ring);
+}
+
+.btn-brand,
+.btn-primary {
+  background: var(--brand);
+  color: var(--brand-foreground);
+  border-color: var(--brand);
+}
+
+.btn-brand:hover,
+.btn-primary:hover {
+  background: var(--brand-hover);
+  color: var(--brand-foreground);
+  border-color: var(--brand-hover);
+}
+
+.btn-outline,
+.btn-secondary {
+  background: transparent;
+  color: var(--foreground);
+  border-color: var(--border);
+}
+
+.btn-outline:hover,
+.btn-secondary:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--border);
+}
+
+.btn-secondary-filled {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  border-color: var(--border);
+}
+
+.btn-secondary-filled:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--foreground);
+  border-color: transparent;
+}
+
+.btn-ghost:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* ==========================================================================
+   Info Grid
+   ========================================================================== */
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 6px 12px;
+
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.info-key {
+  color: var(--muted-foreground);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 600;
+}
+
+.info-val {
+  color: var(--foreground);
+  font-size: 12px;
+  line-height: 1.5;
+  word-break: break-word;
+
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+}
+
+.chip {
+  display: inline-block;
+  padding: 1px 7px;
+
+  border: 1px solid var(--brand-border);
+  border-radius: calc(var(--radius) - 6px);
+  background: var(--brand-muted);
+  color: var(--brand);
+
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 11px;
+}
+
+.section-label {
+  margin-bottom: 6px;
+  color: var(--muted-foreground);
+
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   Siblings
+   ========================================================================== */
+
+.siblings-wrap {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.sib-btn {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 5px);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  cursor: pointer;
+
+  font-size: 11px;
+  white-space: nowrap;
+
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.sib-btn:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.sib-btn.current,
+.sib-btn[data-state="active"] {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+  font-weight: 600;
+}
+
+.sib-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--ring);
+}
+
+/* ==========================================================================
+   DOM Tree
+   ========================================================================== */
+
+.tree-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.tree-meta {
+  margin: -4px 0 8px;
+  color: var(--muted-foreground);
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.tree-select {
+  height: 30px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.tree-select:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--card),
+    0 0 0 4px var(--ring);
+}
+
+.tree-toggle {
+  height: 30px;
+  padding: 3px 9px 3px 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1;
+
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease,
+    opacity 150ms ease;
+}
+
+.tree-toggle:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.tree-toggle:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--card),
+    0 0 0 4px var(--ring);
+}
+
+.tree-toggle-track {
+  width: 34px;
+  height: 20px;
+  padding: 2px;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+
+  border-radius: 999px;
+  background: var(--muted-foreground);
+  opacity: 0.55;
+
+  transition:
+    background-color 150ms ease,
+    opacity 150ms ease;
+}
+
+.tree-toggle-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--background);
+  box-shadow: 0 1px 2px var(--shadow-sm);
+
+  transform: translateX(0);
+  transition: transform 150ms ease;
+}
+
+.tree-toggle.active {
+  border-color: var(--brand-border);
+  background: var(--brand-muted);
+  color: var(--brand);
+}
+
+.tree-toggle.active .tree-toggle-track {
+  background: var(--brand);
+  opacity: 1;
+}
+
+.tree-toggle.active .tree-toggle-thumb {
+  transform: translateX(14px);
+}
+
+.tree-toggle-text {
+  white-space: nowrap;
+}
+
+.tree-wrap {
+  min-height: 180px;
+  max-height: calc(100vh - 230px);
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 3px);
+  background: var(--background);
+}
+
+.tree-row {
+  min-height: 30px;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+  cursor: pointer;
+  white-space: nowrap;
+
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.tree-row:last-child {
+  border-bottom: none;
+}
+
+.tree-row:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.tree-row.target {
+  background: var(--brand-muted);
+  color: var(--brand);
+}
+
+.tree-tag {
+  color: var(--brand);
+  font-weight: 700;
+}
+
+.tree-id {
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+.tree-cls {
+  color: var(--muted-foreground);
+}
+
+.tree-count {
+  color: var(--muted-foreground);
+}
+
+.tree-txt {
+  margin-left: 4px;
+  color: var(--muted-foreground);
+}
+
+/* ==========================================================================
+   Code Blocks
+   ========================================================================== */
+
+.js-tab-panel {
+  min-height: 0;
+}
+
+.js-results {
+  min-height: 0;
+  padding: 2px 4px 12px 2px;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  overflow: auto;
+}
+
+.js-result-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow:
+    0 1px 2px var(--shadow-sm),
+    0 10px 24px -20px var(--shadow-lg);
+}
+
+.js-result-header {
+  min-height: 44px;
+  padding: 9px 12px;
+  display: grid;
+  gap: 7px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--muted) 48%, var(--card));
+}
+
+.js-result-heading {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.js-result-heading strong {
+  overflow: hidden;
+  color: var(--foreground);
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.js-result-index {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid var(--brand-border);
+  border-radius: 7px;
+  background: var(--brand-muted);
+  color: var(--brand);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.js-result-location {
+  width: 100%;
+  padding-left: 30px;
+  display: block;
+  color: var(--muted-foreground);
+  font: 10px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  user-select: text;
+}
+
+.js-result-card .code-wrap {
+  min-height: auto;
+}
+
+.js-result-card .code {
+  height: auto;
+  max-height: 320px;
+  border: 0;
+  border-radius: 0;
+}
+
+.code-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.code {
+  display: block;
+  height: 100%;
+  overflow: auto;
+
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--code);
+  color: var(--code-foreground);
+
+  white-space: pre-wrap;
+  tab-size: 2;
+
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 11.5px;
+  line-height: 1.65;
+}
+
+.code code {
+  display: block;
+  white-space: pre-wrap;
+}
+
+.hljs {
+  background: transparent;
+  color: var(--code-foreground);
+}
+
+.hljs-tag,
+.hljs-selector-tag,
+.hljs-name,
+.hljs-attr {
+  color: var(--brand);
+}
+
+.hljs-string,
+.hljs-selector-class,
+.hljs-selector-id,
+.hljs-template-string {
+  color: var(--success);
+}
+
+.hljs-number,
+.hljs-literal,
+.hljs-attribute {
+  color: var(--warning);
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: var(--muted-foreground);
+}
+
+.hljs-keyword,
+.hljs-selector-pseudo,
+.hljs-built_in,
+.hljs-title,
+.hljs-property {
+  color: var(--pink);
+}
+
+/* ==========================================================================
+   Preview
+   ========================================================================== */
+
+.preview-frame {
+  flex: 1;
+  width: 100%;
+  min-height: 360px;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--preview);
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+
+.empty {
+  padding: 6px 0;
+  color: var(--muted-foreground);
+
+  font-size: 12px;
+  font-style: italic;
+
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+}
+
+/* ==========================================================================
+   Attribute Table
+   ========================================================================== */
+
+.attr-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 11.5px;
+}
+
+.attr-table tr {
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+}
+
+.attr-table td {
+  padding: 5px 8px;
+  vertical-align: top;
+}
+
+.attr-name {
+  color: var(--pink);
+  white-space: nowrap;
+}
+
+.attr-val {
+  color: var(--success);
+  word-break: break-all;
+}
+
+/* ==========================================================================
+   Scrollbars
+   ========================================================================== */
+
+.body,
+.tree-wrap,
+.code,
+.siblings-wrap,
+.breadcrumb {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.body::-webkit-scrollbar,
+.tree-wrap::-webkit-scrollbar,
+.code::-webkit-scrollbar,
+.siblings-wrap::-webkit-scrollbar,
+.breadcrumb::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.body::-webkit-scrollbar-track,
+.tree-wrap::-webkit-scrollbar-track,
+.code::-webkit-scrollbar-track,
+.siblings-wrap::-webkit-scrollbar-track,
+.breadcrumb::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.body::-webkit-scrollbar-thumb,
+.tree-wrap::-webkit-scrollbar-thumb,
+.code::-webkit-scrollbar-thumb,
+.siblings-wrap::-webkit-scrollbar-thumb,
+.breadcrumb::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+}
+
+.body::-webkit-scrollbar-thumb:hover,
+.tree-wrap::-webkit-scrollbar-thumb:hover,
+.code::-webkit-scrollbar-thumb:hover,
+.siblings-wrap::-webkit-scrollbar-thumb:hover,
+.breadcrumb::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+/* ==========================================================================
+   Loader
+   ========================================================================== */
+
+.inspector-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.inspector-shell .main {
+  flex: 1;
+  min-height: 0;
+}
+
+.inspector-loading {
+  width: 100%;
+  min-height: 180px;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.inspector-loading-icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  color: var(--brand);
+  animation: inspector-loader-spin 0.8s linear infinite;
+}
+
+.inspector-loading-text {
+  color: var(--muted-foreground);
+}
+
+@keyframes inspector-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+
+  .inspector-loading-icon {
+    animation: none;
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "name": "Element Inspector",
+  "version": "1.0.0",
+  "description": "Inspect page elements and copy selectors.",
+
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "storage",
+    "scripting",
+    "identity",
+    "contextMenus",
+    "downloads",
+    "clipboardWrite"
+  ],
+
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_title": "Element Inspector",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["assets/listener-tracker.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-wrapper.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "element-inspector@moyarich.local",
+      "strict_min_version": "128.0"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "devtools_page": "devtools.html"
+}

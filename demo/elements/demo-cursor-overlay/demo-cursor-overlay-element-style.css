@@ -1,0 +1,127 @@
+:host {
+  --cursor-size: 56px;
+
+  --cursor-halo-size: calc(var(--cursor-size) - 15px);
+  --cursor-halo-border-width: 1px;
+
+  --cursor-halo-border-color: #0f0f0fd1;
+  --cursor-halo-inner-ring: rgba(255, 252, 204, 0.458);
+  --cursor-halo-inner-border-width: 1px;
+  --cursor-halo-inner-background: #ffffff;
+
+  --cursor-halo-outer-ring: rgba(2, 2, 132, 0.794);
+  --cursor-halo-outer-border-width: 5px;
+  --cursor-halo-outer-background: transparent;
+
+  position: fixed;
+  inset: 0;
+  display: block;
+
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  pointer-events: none;
+  cursor: none;
+  will-change: translate;
+  mix-blend-mode: difference;
+}
+
+.cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.cursor__halo {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+
+  width: var(--cursor-halo-size);
+  height: var(--cursor-halo-size);
+
+  box-sizing: border-box;
+
+  border: var(--cursor-halo-border-width) solid var(--cursor-halo-border-color);
+
+  border-radius: 50%;
+  translate: -50% -50%;
+  background: transparent;
+  pointer-events: none;
+}
+
+.cursor__halo::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: var(--cursor-halo-inner-border-width) solid
+    var(--cursor-halo-inner-ring);
+  border-radius: inherit;
+  background: var(--cursor-halo-inner-background);
+  pointer-events: none;
+}
+
+.cursor__halo::after {
+  content: "";
+
+  position: absolute;
+  inset: -8px;
+
+  border: var(--cursor-halo-outer-border-width) solid
+    var(--cursor-halo-outer-ring);
+  border-radius: inherit;
+
+  background: var(--cursor-halo-outer-background);
+
+  pointer-events: none;
+}
+
+.cursor.click .cursor__halo {
+  animation: demo-click 500ms ease-out;
+}
+
+.cursor.click .cursor__halo::after {
+  animation: demo-click-ring 500ms ease-out;
+}
+
+@keyframes demo-click {
+  0% {
+    scale: 1;
+  }
+
+  35% {
+    scale: 0.8;
+  }
+
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes demo-click-ring {
+  0% {
+    scale: 0.8;
+    opacity: 1;
+  }
+
+  100% {
+    scale: 1.7;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor.click .cursor__halo,
+  .cursor.click .cursor__halo::after {
+    animation: none;
+  }
+}

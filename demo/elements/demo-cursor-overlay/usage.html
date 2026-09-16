@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo Cursor Overlay usage</title>
+    <script type="module" src="./demo-cursor-overlay-element.mjs"></script>
+    <style>
+      :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #172033; background: #eef2f8; }
+      * { box-sizing: border-box; }
+      body { min-width: 320px; min-height: 100vh; margin: 0; }
+      button, input { font: inherit; }
+      .page { position: relative; z-index: 1000; width: min(1080px, calc(100% - 32px)); margin: 0 auto; padding: 48px 0 64px; }
+      .eyebrow { margin: 0 0 8px; color: #3168de; font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+      h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: -.045em; }
+      .intro { max-width: 660px; margin: 14px 0 30px; color: #59647a; font-size: 1.05rem; line-height: 1.65; }
+      .panel { overflow: hidden; border: 1px solid #d7deea; border-radius: 22px; background: #fff; box-shadow: 0 20px 50px rgba(34, 48, 74, .12); }
+      .panel-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; padding: 20px 24px; border-bottom: 1px solid #e3e8f0; }
+      .panel-header h2 { margin: 0 0 4px; font-size: 1rem; }
+      .panel-header p { margin: 0; color: #69758a; font-size: .875rem; }
+      .size-control { display: flex; align-items: center; gap: 10px; font-size: .875rem; font-weight: 700; }
+      .size-control output { min-width: 48px; color: #3168de; }
+      .surfaces { display: grid; grid-template-columns: repeat(4, 1fr); min-height: 280px; }
+      .surface { display: grid; place-items: center; padding: 24px; text-align: center; }
+      .surface span { padding: 7px 11px; border-radius: 999px; background: rgba(255, 255, 255, .86); color: #172033; font-size: .8rem; font-weight: 800; box-shadow: 0 5px 18px rgba(0, 0, 0, .13); }
+      .surface--light { background: #fff; }
+      .surface--dark { background: #111827; }
+      .surface--warm { background: #f97316; }
+      .surface--image { background: linear-gradient(135deg, rgba(37, 99, 235, .1), rgba(126, 34, 206, .2)), repeating-linear-gradient(45deg, #85d8ff 0 18px, #dec8ff 18px 36px); }
+      .actions { display: flex; flex-wrap: wrap; gap: 12px; padding: 22px 24px; border-top: 1px solid #e3e8f0; background: #f8fafc; }
+      .action { min-height: 42px; padding: 0 18px; border: 1px solid #cbd5e1; border-radius: 11px; background: #fff; color: #243047; font-weight: 750; box-shadow: 0 2px 4px rgba(22, 32, 51, .07); }
+      .action--primary { border-color: #3168de; background: #3168de; color: #fff; }
+      .status { align-self: center; margin-left: auto; color: #59647a; font-size: .875rem; }
+      .example { margin-top: 24px; padding: 22px 24px; border: 1px solid #d7deea; border-radius: 18px; background: #172033; color: #dce7ff; box-shadow: 0 12px 35px rgba(34, 48, 74, .1); }
+      .example h2 { margin: 0 0 14px; color: #fff; font-size: 1rem; }
+      pre { margin: 0; overflow: auto; font: .85rem/1.65 ui-monospace, SFMono-Regular, Menlo, monospace; }
+      @media (max-width: 720px) { .page { padding-top: 28px; } .surfaces { grid-template-columns: repeat(2, 1fr); } .status { width: 100%; margin-left: 0; } }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <p class="eyebrow">Demo component</p>
+      <h1>Cursor overlay</h1>
+      <p class="intro">Move across every surface to check contrast and top-layer visibility. Click either button to preview the click animation.</p>
+      <section class="panel" aria-labelledby="playground-title">
+        <header class="panel-header">
+          <div><h2 id="playground-title">Interactive playground</h2><p>The page content deliberately uses a high z-index.</p></div>
+          <label class="size-control">Cursor size <input data-size type="range" min="40" max="88" value="56" /> <output data-size-output>56px</output></label>
+        </header>
+        <div class="surfaces">
+          <div class="surface surface--light"><span>Light</span></div>
+          <div class="surface surface--dark"><span>Dark</span></div>
+          <div class="surface surface--warm"><span>Warm</span></div>
+          <div class="surface surface--image"><span>Pattern</span></div>
+        </div>
+        <div class="actions">
+          <button class="action action--primary" type="button" data-action>Test click</button>
+          <button class="action" type="button" data-action>Test again</button>
+          <span class="status" data-status aria-live="polite">No clicks yet</span>
+        </div>
+      </section>
+      <section class="example" aria-labelledby="example-title">
+        <h2 id="example-title">Usage</h2>
+        <pre><code>&lt;script type="module" src="./demo-cursor-overlay-element.mjs"&gt;&lt;/script&gt;
+
+&lt;demo-cursor-overlay
+  style="--cursor-size: 56px"
+&gt;&lt;/demo-cursor-overlay&gt;</code></pre>
+      </section>
+    </main>
+    <demo-cursor-overlay></demo-cursor-overlay>
+    <script type="module">
+      const overlay = document.querySelector("demo-cursor-overlay");
+      const sizeInput = document.querySelector("[data-size]");
+      const sizeOutput = document.querySelector("[data-size-output]");
+      const status = document.querySelector("[data-status]");
+      let clickCount = 0;
+
+      sizeInput.addEventListener("input", () => {
+        const size = sizeInput.value + "px";
+        overlay.style.setProperty("--cursor-size", size);
+        sizeOutput.value = size;
+      });
+
+      document.querySelectorAll("[data-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          clickCount += 1;
+          status.textContent = "Click animation played " + clickCount + " " + (clickCount === 1 ? "time" : "times");
+        });
+      });
+    </script>
+  </body>
+</html>

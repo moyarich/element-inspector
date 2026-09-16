@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "useDefineForClassFields": true,
+    "module": "es2022",
+    "lib": ["es2022", "DOM"],
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["chrome", "webextension-polyfill"]
+  },
+  "paths": {
+    "@/*": ["src/*"]
+  },
+  "include": ["src", "vite.config.ts"]
+}

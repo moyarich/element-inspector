@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo Caption Element</title>
+
+    <script type="module">
+      import "./demo-caption-element.mjs";
+
+      const caption = document.querySelector("demo-caption");
+
+      function showCaption({ title, description, placement, pointer }) {
+        if (!caption.matches(":popover-open")) caption.showPopover();
+        caption.caption = {
+          title,
+          description,
+          placement,
+          pointer,
+          visible: true,
+        };
+      }
+
+      document.querySelectorAll("[data-side]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const rect = button.getBoundingClientRect();
+          showCaption({
+            title: `${button.dataset.side} arrow`,
+            description: "The arrow points to the center of the selected action.",
+            placement: {
+              x: rect.left + rect.width / 2,
+              y: rect.top + rect.height / 2,
+              side: button.dataset.side,
+              offset: 30,
+            },
+            pointer: "arrow",
+          });
+        });
+      });
+
+      document.querySelectorAll("[data-placement]").forEach((button) => {
+        button.addEventListener("click", () => {
+          showCaption({
+            title: `${button.dataset.placement} bubble`,
+            description: "Named placements are useful when no action anchor is needed.",
+            placement: button.dataset.placement,
+            pointer: "bubble",
+          });
+        });
+      });
+
+      document.querySelector("[data-hide]").addEventListener("click", () => {
+        caption.caption = { ...caption.caption, visible: false };
+      });
+
+      showCaption({
+        title: "Caption usage",
+        description: "Choose a control to preview each placement and pointer.",
+        placement: "top-right",
+        pointer: "bubble",
+      });
+    </script>
+
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: system-ui, sans-serif;
+        background: #f4f7fb;
+        color: #172033;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      main {
+        width: min(900px, calc(100% - 48px));
+        margin: 0 auto;
+        padding: 48px 0;
+      }
+
+      .card {
+        position: relative;
+        padding: 24px;
+        border: 1px solid #d7dfeb;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 12px 30px rgb(23 32 51 / 10%);
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      button {
+        padding: 10px 16px;
+        border: 1px solid #b9c5d8;
+        border-radius: 10px;
+        background: #fff;
+        color: inherit;
+        font: inherit;
+        font-weight: 650;
+        cursor: pointer;
+      }
+
+      button:hover {
+        border-color: #2563eb;
+        background: #eff6ff;
+      }
+
+      .hide-caption {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+      }
+
+      h2 {
+        margin-top: 36px;
+        font-size: 1rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <h1>Demo caption element</h1>
+      <p>Test fixed bubbles and captions anchored to an action.</p>
+
+      <section class="card">
+        <button class="hide-caption" type="button" data-hide>
+          Hide caption
+        </button>
+
+        <h2>Anchored arrows</h2>
+        <div class="actions">
+          <button type="button" data-side="top">Caption above</button>
+          <button type="button" data-side="right">Caption right</button>
+          <button type="button" data-side="bottom">Caption below</button>
+          <button type="button" data-side="left">Caption left</button>
+        </div>
+
+        <h2>Fixed bubbles</h2>
+        <div class="actions">
+          <button type="button" data-placement="top-left">Top left</button>
+          <button type="button" data-placement="top-right">Top right</button>
+          <button type="button" data-placement="bottom-left">Bottom left</button>
+          <button type="button" data-placement="bottom-right">Bottom right</button>
+        </div>
+      </section>
+    </main>
+
+    <demo-caption popover="manual"></demo-caption>
+  </body>
+</html>
