@@ -142,6 +142,34 @@ Install dependencies:
 npm install
 ```
 
+### Local browser install
+
+For local development on macOS or Linux, use the interactive browser launcher. It builds the correct target and runs Element Inspector in a dedicated development profile, so your normal browser profile is not modified.
+
+Choose the action and browser with `fzf`:
+
+```bash
+npm run local
+```
+
+Or go directly to install or uninstall and choose only the browser:
+
+```bash
+npm run local:install
+npm run local:uninstall
+```
+
+Detected Chrome, Chrome Canary/Beta, Edge, Brave, Chromium, Firefox, and Firefox Developer Edition installations are offered when available. You can also bypass `fzf` by passing a browser slug directly:
+
+```bash
+bash ./scripts/local-extension.sh install chrome
+bash ./scripts/local-extension.sh uninstall chrome
+```
+
+Local development profiles are stored under `${XDG_STATE_HOME:-~/.local/state}/element-inspector/profiles`. Set `ELEMENT_INSPECTOR_LOCAL_STATE_DIR` to override that location. Uninstall removes only the selected script-managed profile.
+
+The launcher requires `fzf`. When Homebrew is available, the script can install `fzf` automatically; otherwise install it with your system package manager.
+
 Create a Chrome package:
 
 ```bash
