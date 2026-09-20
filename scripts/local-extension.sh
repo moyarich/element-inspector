@@ -267,12 +267,12 @@ sign_firefox_extension() {
   rm -rf -- "${FIREFOX_ARTIFACTS_DIRECTORY}"
   mkdir -p -- "${FIREFOX_ARTIFACTS_DIRECTORY}"
 
-  printf 'Signing Firefox local version %s through Mozilla…\n' "${signed_version}"
+  printf 'Signing Firefox local version %s through Mozilla…\n' "${signed_version}" >&2
 
   if ! "${WEB_EXT_EXECUTABLE}" sign \
     --channel unlisted \
     --source-dir "${PROJECT_DIRECTORY}/dist" \
-    --artifacts-dir "${FIREFOX_ARTIFACTS_DIRECTORY}"; then
+    --artifacts-dir "${FIREFOX_ARTIFACTS_DIRECTORY}" >&2; then
     printf '\nError: Firefox Release requires a Mozilla-signed XPI for persistent installation.\n' >&2
     printf 'Add WEB_EXT_API_KEY and WEB_EXT_API_SECRET to .env, or configure web-ext signing credentials.\n' >&2
     exit 1
