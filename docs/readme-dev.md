@@ -19,22 +19,59 @@ npm install
 
 ### Local browser install
 
-For local development on macOS or Linux, use the interactive browser launcher. It builds the correct target and runs Element Inspector in a dedicated development profile, so your normal browser profile is not modified.
-
-Choose the action and browser with `fzf`:
+Use the interactive launcher to install/update or uninstall Element Inspector and choose the target browser with `fzf`:
 
 ```bash
 npm run local
 ```
 
-Detected Chrome, Chrome Canary/Beta, Edge, Brave, Chromium, Firefox, and Firefox Developer Edition installations are offered when available. You can also bypass `fzf` by passing a browser slug directly:
+Detected Chrome, Chrome Canary/Beta, Edge, Brave, Chromium, Firefox, and Firefox Developer Edition installations are offered when available. You can bypass `fzf` by passing the action and browser slug directly:
 
 ```bash
-bash ./scripts/local-extension.sh install chrome
-bash ./scripts/local-extension.sh uninstall chrome
+bash ./scripts/local-extension.sh install firefox
+bash ./scripts/local-extension.sh uninstall firefox
 ```
 
-Local development profiles are stored under `${XDG_STATE_HOME:-~/.local/state}/element-inspector/profiles`. Set `ELEMENT_INSPECTOR_LOCAL_STATE_DIR` to override that location. Uninstall removes only the selected script-managed profile.
+#### Firefox
+
+Firefox install/update targets your regular Firefox profile rather than a temporary development profile.
+
+The launcher:
+
+1. Builds the latest local Firefox source.
+2. Assigns a unique local version so Firefox treats subsequent runs as updates.
+3. Signs that build through Mozilla as an unlisted XPI.
+4. Opens the signed XPI in regular Firefox.
+5. Lets Firefox confirm the install/update in the browser.
+
+Firefox Release requires signed extensions for persistent installation. Configure Mozilla Add-ons API credentials either in `.env`:
+
+```text
+WEB_EXT_API_KEY=...
+WEB_EXT_API_SECRET=...
+```
+
+or through a supported `web-ext` configuration file.
+
+Signed local Firefox artifacts are written under:
+
+```text
+${XDG_STATE_HOME:-~/.local/state}/element-inspector/firefox-signed
+```
+
+Set `ELEMENT_INSPECTOR_LOCAL_STATE_DIR` to override the local state directory.
+
+Firefox uninstall opens `about:addons` in the regular browser so the installed extension can be removed from that profile.
+
+#### Chromium browsers
+
+Chromium-family local runs continue to use script-managed development profiles under:
+
+```text
+${XDG_STATE_HOME:-~/.local/state}/element-inspector/profiles
+```
+
+Uninstall removes only the selected script-managed Chromium profile.
 
 The launcher requires `fzf`. When Homebrew is available, the script can install `fzf` automatically; otherwise install it with your system package manager.
 
@@ -76,4 +113,3 @@ npm run demo:gif
 The picker can launch Chrome for manual inspection, run the automated smoke
 test, or regenerate the README GIF. It requires `fzf` and can install it with
 Homebrew when available. GIF generation also requires `ffmpeg`.
-
