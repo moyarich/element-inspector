@@ -4,25 +4,38 @@ set -Eeuo pipefail
 
 SCRIPT_DIRECTORY="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIRECTORY="$(cd -- "${SCRIPT_DIRECTORY}/.." && pwd)"
+ENV_FILE="${PROJECT_DIRECTORY}/.env"
 WEB_EXT_EXECUTABLE="${PROJECT_DIRECTORY}/node_modules/.bin/web-ext"
 STATE_DIRECTORY="${ELEMENT_INSPECTOR_LOCAL_STATE_DIR:-${XDG_STATE_HOME:-${HOME}/.local/state}/element-inspector}"
 PROFILES_DIRECTORY="${STATE_DIRECTORY}/profiles"
+FIREFOX_ARTIFACTS_DIRECTORY="${STATE_DIRECTORY}/firefox-signed"
 
 usage() {
   printf '%s\n' \
     "Usage: scripts/local-extension.sh [install|uninstall] [browser]" \
     "" \
-    "Interactive local browser install/uninstall for Element Inspector." \
+    "Interactive local browser install/update and uninstall for Element Inspector." \
     "" \
     "Examples:" \
     "  scripts/local-extension.sh" \
     "  scripts/local-extension.sh install" \
-    "  scripts/local-extension.sh install chrome" \
+    "  scripts/local-extension.sh install firefox" \
     "  scripts/local-extension.sh uninstall firefox"
 }
 
 is_command_present() {
   command -v "$1" >/dev/null 2>&1
+}
+
+load_environment() {
+  if [[ ! -f "${ENV_FILE}" ]]; then
+    return
+  fi
+
+  set -a
+  # shellcheck disable=SC1090
+  source "${ENV_FILE}"
+  set +a
 }
 
 install_fzf() {
@@ -60,6 +73,8 @@ emit_browser() {
   local profile_directory="${PROFILES_DIRECTORY}/${slug}"
 
   if [[ "${action}" == "install" ]]; then
+    [[ -n "${executable}" && -x "${executable}" ]] || return 0
+  elif [[ "${engine}" == "firefox" ]]; then
     [[ -n "${executable}" && -x "${executable}" ]] || return 0
   else
     [[ -d "${profile_directory}" || ( -n "${executable}" && -x "${executable}" ) ]] || return 0
@@ -129,8 +144,8 @@ select_action() {
   install_fzf
 
   selection="$(printf '%s\n' \
-    $'install\tBuild and launch Element Inspector in a dedicated local browser profile' \
-    $'uninstall\tRemove the dedicated local browser profile' | \
+    $'install\tInstall or update Element Inspector using the latest local source' \
+    $'uninstall\tRemove Element Inspector from the selected browser' | \
     fzf \
       --height=60% \
       --layout=reverse \
@@ -152,11 +167,7 @@ select_browser() {
   browsers="$(list_browsers "${action}")"
 
   if [[ -z "${browsers}" ]]; then
-    if [[ "${action}" == "install" ]]; then
-      printf 'Error: no supported browser was detected.\n' >&2
-    else
-      printf 'No local Element Inspector browser profiles were found.\n'
-    fi
+    printf 'Error: no supported browser was detected.\n' >&2
     exit 1
   fi
 
@@ -197,6 +208,11 @@ require_install_dependencies() {
     exit 1
   fi
 
+  if ! is_command_present node; then
+    printf 'Error: Node.js is required.\n' >&2
+    exit 1
+  fi
+
   if [[ ! -x "${WEB_EXT_EXECUTABLE}" ]]; then
     printf 'Error: local web-ext executable not found: %s\n' "${WEB_EXT_EXECUTABLE}" >&2
     printf 'Run npm install before using the local browser installer.\n' >&2
@@ -204,40 +220,143 @@ require_install_dependencies() {
   fi
 }
 
+set_firefox_local_version() {
+  local manifest_path="${PROJECT_DIRECTORY}/dist/manifest.json"
+
+  node - "${manifest_path}" <<'NODE'
+const fs = require("node:fs");
+
+const manifestPath = process.argv[2];
+const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+const baseVersion = String(manifest.version ?? "1.0");
+const parts = baseVersion.split(".");
+const major = Number.parseInt(parts[0] || "1", 10);
+const minor = Number.parseInt(parts[1] || "0", 10);
+const now = new Date();
+
+const datePart = Number(
+  [
+    now.getUTCFullYear(),
+    String(now.getUTCMonth() + 1).padStart(2, "0"),
+    String(now.getUTCDate()).padStart(2, "0"),
+  ].join(""),
+);
+
+const timeDigits = Number(
+  [
+    String(now.getUTCHours()).padStart(2, "0"),
+    String(now.getUTCMinutes()).padStart(2, "0"),
+    String(now.getUTCSeconds()).padStart(2, "0"),
+    String(now.getUTCMilliseconds()).padStart(3, "0"),
+  ].join(""),
+);
+
+const timePart = 100000000 + timeDigits;
+manifest.version = `${major}.${minor}.${datePart}.${timePart}`;
+
+fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+process.stdout.write(manifest.version);
+NODE
+}
+
+sign_firefox_extension() {
+  local signed_version="$1"
+  local xpi_path
+
+  load_environment
+  rm -rf -- "${FIREFOX_ARTIFACTS_DIRECTORY}"
+  mkdir -p -- "${FIREFOX_ARTIFACTS_DIRECTORY}"
+
+  printf 'Signing Firefox local version %s through Mozilla…\n' "${signed_version}"
+
+  if ! "${WEB_EXT_EXECUTABLE}" sign \
+    --channel unlisted \
+    --source-dir "${PROJECT_DIRECTORY}/dist" \
+    --artifacts-dir "${FIREFOX_ARTIFACTS_DIRECTORY}"; then
+    printf '\nError: Firefox Release requires a Mozilla-signed XPI for persistent installation.\n' >&2
+    printf 'Add WEB_EXT_API_KEY and WEB_EXT_API_SECRET to .env, or configure web-ext signing credentials.\n' >&2
+    exit 1
+  fi
+
+  xpi_path="$(find "${FIREFOX_ARTIFACTS_DIRECTORY}" -maxdepth 1 -type f -name '*.xpi' -print | head -n 1)"
+
+  if [[ -z "${xpi_path}" ]]; then
+    printf 'Error: Mozilla signing completed without producing an XPI.\n' >&2
+    exit 1
+  fi
+
+  printf '%s' "${xpi_path}"
+}
+
+open_firefox_xpi() {
+  local executable="$1"
+  local xpi_path="$2"
+  local xpi_url
+
+  xpi_url="$(node -e '
+    const { pathToFileURL } = require("node:url");
+    process.stdout.write(pathToFileURL(process.argv[1]).href);
+  ' "${xpi_path}")"
+
+  "${executable}" --new-tab "${xpi_url}" >/dev/null 2>&1 &
+
+  printf '\nFirefox opened the signed XPI in your regular profile.\n'
+  printf 'Confirm the Firefox install/update prompt to finish.\n'
+}
+
+install_chromium_extension() {
+  local label="$1"
+  local slug="$2"
+  local executable="$3"
+  local profile_directory="${PROFILES_DIRECTORY}/${slug}"
+
+  mkdir -p -- "${PROFILES_DIRECTORY}"
+
+  printf '\nBrowser: %s\n' "${label}"
+  printf 'Development profile: %s\n\n' "${profile_directory}"
+
+  npm run build:chrome
+
+  "${WEB_EXT_EXECUTABLE}" run \
+    --target chromium \
+    --source-dir "${PROJECT_DIRECTORY}/dist" \
+    --chromium-binary "${executable}" \
+    --chromium-profile "${profile_directory}" \
+    --profile-create-if-missing
+}
+
+install_firefox_extension() {
+  local label="$1"
+  local executable="$2"
+  local signed_version
+  local xpi_path
+
+  printf '\nBrowser: %s\n' "${label}"
+  printf 'Target: regular Firefox profile\n\n'
+
+  npm run build:firefox
+  signed_version="$(set_firefox_local_version)"
+  xpi_path="$(sign_firefox_extension "${signed_version}")"
+
+  printf '\nSigned XPI: %s\n' "${xpi_path}"
+  open_firefox_xpi "${executable}" "${xpi_path}"
+}
+
 install_extension() {
   local label="$1"
   local engine="$2"
   local slug="$3"
   local executable="$4"
-  local profile_directory="${PROFILES_DIRECTORY}/${slug}"
 
   require_install_dependencies
-  mkdir -p -- "${PROFILES_DIRECTORY}"
-
-  printf '\nBrowser: %s\n' "${label}"
-  printf 'Profile: %s\n\n' "${profile_directory}"
-
   cd -- "${PROJECT_DIRECTORY}"
 
   case "${engine}" in
     chromium)
-      npm run build:chrome
-      "${WEB_EXT_EXECUTABLE}" run \
-        --target chromium \
-        --source-dir "${PROJECT_DIRECTORY}/dist" \
-        --chromium-binary "${executable}" \
-        --chromium-profile "${profile_directory}" \
-        --profile-create-if-missing
+      install_chromium_extension "${label}" "${slug}" "${executable}"
       ;;
     firefox)
-      npm run build:firefox
-      "${WEB_EXT_EXECUTABLE}" run \
-        --target firefox-desktop \
-        --source-dir "${PROJECT_DIRECTORY}/dist" \
-        --firefox "${executable}" \
-        --firefox-profile "${profile_directory}" \
-        --profile-create-if-missing \
-        --keep-profile-changes
+      install_firefox_extension "${label}" "${executable}"
       ;;
     *)
       printf 'Unsupported browser engine: %s\n' "${engine}" >&2
@@ -246,7 +365,7 @@ install_extension() {
   esac
 }
 
-uninstall_extension() {
+uninstall_chromium_extension() {
   local label="$1"
   local slug="$2"
   local profile_directory="${PROFILES_DIRECTORY}/${slug}"
@@ -269,6 +388,37 @@ uninstall_extension() {
     "${profile_directory}"
 
   rmdir "${PROFILES_DIRECTORY}" >/dev/null 2>&1 || true
+}
+
+uninstall_firefox_extension() {
+  local label="$1"
+  local executable="$2"
+
+  "${executable}" --new-tab "about:addons" >/dev/null 2>&1 &
+
+  printf 'Opened Firefox Add-ons Manager for %s.\n' "${label}"
+  printf 'Remove Element Inspector there to uninstall it from the regular profile.\n'
+}
+
+uninstall_extension() {
+  local label="$1"
+  local engine="$2"
+  local slug="$3"
+  local executable="$4"
+
+  case "${engine}" in
+    chromium)
+      uninstall_chromium_extension "${label}" "${slug}"
+      ;;
+    firefox)
+      uninstall_firefox_extension "${label}" "${executable}"
+      ;;
+    *)
+      printf 'Unsupported browser engine: %s\n' "${engine}" >&2
+      exit 1
+      ;;
+  esac
+
   rmdir "${STATE_DIRECTORY}" >/dev/null 2>&1 || true
 }
 
@@ -300,6 +450,6 @@ case "${action}" in
     install_extension "${browser_label}" "${browser_engine}" "${browser_slug}" "${browser_executable}"
     ;;
   uninstall)
-    uninstall_extension "${browser_label}" "${browser_slug}"
+    uninstall_extension "${browser_label}" "${browser_engine}" "${browser_slug}" "${browser_executable}"
     ;;
 esac
