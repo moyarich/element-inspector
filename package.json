@@ -14,6 +14,7 @@
     "build": "npm run build:chrome",
     "build:chrome": "npm run lint:types && cross-env TARGET=chrome vite build",
     "build:firefox": "npm run lint:types && cross-env TARGET=firefox FF_ADDON_ID=element-inspector@moyarich.local vite build",
+    "local": "bash ./scripts/local-extension.sh",
     "demo": "./scripts/run-demo-interactive.sh",
     "demo:gif": "cross-env TARGET=chrome vite build --mode development && node demo/create-demo.mjs",
     "demo:interactive": "./scripts/run-demo-interactive.sh",
