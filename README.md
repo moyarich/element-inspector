@@ -152,13 +152,6 @@ Choose the action and browser with `fzf`:
 npm run local
 ```
 
-Or go directly to install or uninstall and choose only the browser:
-
-```bash
-npm run local:install
-npm run local:uninstall
-```
-
 Detected Chrome, Chrome Canary/Beta, Edge, Brave, Chromium, Firefox, and Firefox Developer Edition installations are offered when available. You can also bypass `fzf` by passing a browser slug directly:
 
 ```bash
