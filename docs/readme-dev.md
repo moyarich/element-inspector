@@ -2,6 +2,8 @@
 
 This guide contains development-only setup and tooling for Element Inspector.
 
+For manual loading of downloaded release packages, see [manual-install.md](manual-install.md).
+
 ## Build from source
 
 Requirements:
