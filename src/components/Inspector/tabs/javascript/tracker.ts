@@ -9,14 +9,17 @@ declare global {
 (() => {
   if (window.__MOYA_EVENT_LISTENER_TRACKER__) return;
 
-  const listeners = new WeakMap<EventTarget, Array<{
-    type: string;
-    handler: EventListenerOrEventListenerObject;
-    capture: boolean;
-    passive: boolean;
-    once: boolean;
-    registrationStack: string;
-  }>>();
+  const listeners = new WeakMap<
+    EventTarget,
+    Array<{
+      type: string;
+      handler: EventListenerOrEventListenerObject;
+      capture: boolean;
+      passive: boolean;
+      once: boolean;
+      registrationStack: string;
+    }>
+  >();
   const nativeAddEventListener = EventTarget.prototype.addEventListener;
   const nativeRemoveEventListener = EventTarget.prototype.removeEventListener;
 
@@ -30,7 +33,8 @@ declare global {
       entries.push({
         type,
         handler,
-        capture: typeof options === "boolean" ? options : Boolean(options?.capture),
+        capture:
+          typeof options === "boolean" ? options : Boolean(options?.capture),
         passive: typeof options === "object" && Boolean(options.passive),
         once: typeof options === "object" && Boolean(options.once),
         registrationStack: new Error("Listener registered").stack ?? "",
@@ -69,18 +73,33 @@ declare global {
     get(element: Element) {
       const targets: EventTarget[] = [];
       let current: Element | null = element;
-      while (current) { targets.push(current); current = current.parentElement; }
+      while (current) {
+        targets.push(current);
+        current = current.parentElement;
+      }
       targets.push(document, window);
 
-      return targets.flatMap((target) => (listeners.get(target) ?? []).map((listener) => ({
-        target: target === element ? "selected element" : target === document ? "document" : target === window ? "window" : "ancestor",
-        type: listener.type,
-        handler: typeof listener.handler === "function" ? String(listener.handler) : String(listener.handler.handleEvent),
-        capture: listener.capture,
-        passive: listener.passive,
-        once: listener.once,
-        registrationStack: listener.registrationStack,
-      })));
+      return targets.flatMap((target) =>
+        (listeners.get(target) ?? []).map((listener) => ({
+          target:
+            target === element
+              ? "selected element"
+              : target === document
+                ? "document"
+                : target === window
+                  ? "window"
+                  : "ancestor",
+          type: listener.type,
+          handler:
+            typeof listener.handler === "function"
+              ? String(listener.handler)
+              : String(listener.handler.handleEvent),
+          capture: listener.capture,
+          passive: listener.passive,
+          once: listener.once,
+          registrationStack: listener.registrationStack,
+        })),
+      );
     },
   };
 })();

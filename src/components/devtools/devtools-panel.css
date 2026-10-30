@@ -426,7 +426,12 @@ button {
   border-radius: 0;
   background: color-mix(in srgb, var(--muted) 58%, var(--card));
   color: var(--foreground);
-  font: 12px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font:
+    12px/1.5 system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   tab-size: 2;
   scrollbar-width: thin;
   scrollbar-color: var(--muted-foreground) transparent;
@@ -597,7 +602,12 @@ button {
 .listener-locations code {
   overflow-wrap: anywhere;
   color: var(--foreground);
-  font: 10.5px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font:
+    10.5px/1.45 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
 }
 
 .listener-code {
@@ -610,7 +620,12 @@ button {
   color: var(--foreground);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font: 11px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font:
+    11px/1.6 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
   tab-size: 2;
 }
 

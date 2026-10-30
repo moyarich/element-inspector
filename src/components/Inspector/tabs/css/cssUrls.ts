@@ -140,10 +140,7 @@ export function resolveCssAssetUrl(
   }
 }
 
-type CssUrlTransformer = (
-  rawValue: string,
-  originalToken: string,
-) => string;
+type CssUrlTransformer = (rawValue: string, originalToken: string) => string;
 
 function transformCssUrlTokens(
   cssText: string,
@@ -277,9 +274,7 @@ export function absolutizeCssUrls(
   return transformCssUrlTokens(cssText, (rawValue, originalToken) => {
     const resolved = resolveCssAssetUrl(rawValue, baseUrl);
 
-    return resolved
-      ? `url("${escapeCssString(resolved)}")`
-      : originalToken;
+    return resolved ? `url("${escapeCssString(resolved)}")` : originalToken;
   });
 }
 

@@ -76,4 +76,3 @@ npm run demo:gif
 The picker can launch Chrome for manual inspection, run the automated smoke
 test, or regenerate the README GIF. It requires `fzf` and can install it with
 Homebrew when available. GIF generation also requires `ffmpeg`.
-

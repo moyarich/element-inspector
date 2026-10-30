@@ -149,15 +149,13 @@ async function fetchResource(url: string): Promise<FetchResourceResponse> {
         error: "Background returned an invalid resource response.",
       };
     })
-    .catch(
-      (error: unknown): FetchResourceResponse => ({
-        ok: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Could not fetch JavaScript resource.",
-      }),
-    );
+    .catch((error: unknown): FetchResourceResponse => ({
+      ok: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Could not fetch JavaScript resource.",
+    }));
 
   resourceCache.set(url, request);
   return request;
@@ -616,7 +614,12 @@ function buildClassPatterns(
       weight: baseWeight,
     });
 
-    for (const api of ["querySelector", "querySelectorAll", "matches", "closest"]) {
+    for (const api of [
+      "querySelector",
+      "querySelectorAll",
+      "matches",
+      "closest",
+    ]) {
       addPattern(patterns, {
         text: `${api}(${selectorLiteral})`,
         label,
@@ -674,10 +677,7 @@ function getEvidenceBaseWeight(
     return scope === "target" ? 13 : scope === "ancestor" ? 11 : 10;
   }
 
-  if (
-    attributeName === "data-action" ||
-    attributeName === "data-controller"
-  ) {
+  if (attributeName === "data-action" || attributeName === "data-controller") {
     return scope === "target" ? 13 : scope === "ancestor" ? 11 : 9;
   }
 
@@ -1181,8 +1181,7 @@ function hasStrongNonClassEvidence(
   matchedEvidence: MatchedEvidence[],
 ): boolean {
   return matchedEvidence.some(
-    (match) =>
-      match.evidence.attributeName !== "class" && match.pattern.strong,
+    (match) => match.evidence.attributeName !== "class" && match.pattern.strong,
   );
 }
 

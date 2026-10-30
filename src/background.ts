@@ -435,9 +435,7 @@ async function fetchResource(
     return {
       ok: false,
       error:
-        error instanceof Error
-          ? error.message
-          : "Could not fetch resource.",
+        error instanceof Error ? error.message : "Could not fetch resource.",
     };
   }
 }
