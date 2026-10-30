@@ -36,16 +36,16 @@ You can also select an element in the native Elements/Inspector panel and use **
 
 The inspector can float over the page or dock to the left, right, or bottom. Drag a floating inspector to move it, or drag its edge or corner to resize it.
 
-| Tab | What it shows |
-| --- | --- |
-| **Preview** | An isolated reproduction of the selected element |
-| **Info** | Selector, DOM path, dimensions, text, and attributes |
-| **Tree** | The element’s surrounding DOM structure |
-| **HTML** | Formatted or raw `outerHTML` |
-| **CSS** | Matching rules, layout context, assets, fonts, and animations |
-| **Computed** | Final browser-calculated CSS properties |
-| **Vars** | CSS custom properties available to the element |
-| **JS** | Best-effort source clues when a reliable association can be found |
+| Tab          | What it shows                                                     |
+| ------------ | ----------------------------------------------------------------- |
+| **Preview**  | An isolated reproduction of the selected element                  |
+| **Info**     | Selector, DOM path, dimensions, text, and attributes              |
+| **Tree**     | The element’s surrounding DOM structure                           |
+| **HTML**     | Formatted or raw `outerHTML`                                      |
+| **CSS**      | Matching rules, layout context, assets, fonts, and animations     |
+| **Computed** | Final browser-calculated CSS properties                           |
+| **Vars**     | CSS custom properties available to the element                    |
+| **JS**       | Best-effort source clues when a reliable association can be found |
 
 ### Preview and export
 

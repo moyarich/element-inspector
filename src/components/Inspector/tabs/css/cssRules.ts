@@ -237,7 +237,10 @@ function findAtRuleBlockStart(cssText: string): number {
   return -1;
 }
 
-function shouldTraverseMedia(mediaText: string, ownerDocument = document): boolean {
+function shouldTraverseMedia(
+  mediaText: string,
+  ownerDocument = document,
+): boolean {
   return (
     !mediaText ||
     Boolean(ownerDocument.defaultView?.matchMedia(mediaText).matches)
@@ -385,7 +388,7 @@ function isInsideScopeLimit({
 }): boolean {
   if (!limitSelector) return false;
 
-  for (let current: Element | null = el; current && current !== root; ) {
+  for (let current: Element | null = el; current && current !== root;) {
     try {
       if (current.matches(limitSelector)) return true;
     } catch {
@@ -415,7 +418,11 @@ function getApplicableScopeRoots({
     );
   }
 
-  for (let current: Element | null = el; current; current = current.parentElement) {
+  for (
+    let current: Element | null = el;
+    current;
+    current = current.parentElement
+  ) {
     if (!candidates.some((root) => root.contains(current))) continue;
 
     try {
@@ -478,15 +485,15 @@ function hasApplicableQueryContainer({
   rule: CSSContainerRuleLike;
 }): boolean {
   return getContainerConditions(rule).some(({ name, query }) => {
-    const needsSizeContainer =
-      !/^\s*(?:style|scroll-state)\s*\(/i.test(query);
+    const needsSizeContainer = !/^\s*(?:style|scroll-state)\s*\(/i.test(query);
 
     for (
       let container = el.parentElement;
       container;
       container = container.parentElement
     ) {
-      const style = container.ownerDocument.defaultView?.getComputedStyle(container);
+      const style =
+        container.ownerDocument.defaultView?.getComputedStyle(container);
       if (!style) continue;
 
       const names = style.containerName.split(/\s+/).filter(Boolean);
@@ -965,9 +972,7 @@ export function getFontFaceRulesByFamilies(
   ownerDocument: Document = document,
 ): CssFontFaceMatch[] {
   const wantedFamilies = new Set(
-    Array.from(families)
-      .map(normalizeFamilyName)
-      .filter(Boolean),
+    Array.from(families).map(normalizeFamilyName).filter(Boolean),
   );
 
   if (wantedFamilies.size === 0) {

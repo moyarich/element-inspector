@@ -7,10 +7,16 @@ export type {
 } from "./types";
 
 export { getAttributesHtml } from "../components/Inspector/tabs/info/attributes";
-export { getBreadcrumbAncestors, renderBreadcrumbHtml } from "../components/Inspector/tabs/info/breadcrumbs";
+export {
+  getBreadcrumbAncestors,
+  renderBreadcrumbHtml,
+} from "../components/Inspector/tabs/info/breadcrumbs";
 export { getComputedCssText } from "../components/Inspector/tabs/computed/computedCss";
 export { copyText } from "./copyText";
-export { getCssBundle, getInlineCss } from "../components/Inspector/tabs/css/cssBundle";
+export {
+  getCssBundle,
+  getInlineCss,
+} from "../components/Inspector/tabs/css/cssBundle";
 export { cssEscape } from "./cssEscape";
 export {
   calcSpecificity,

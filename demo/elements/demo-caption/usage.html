@@ -26,7 +26,8 @@
           const rect = button.getBoundingClientRect();
           showCaption({
             title: `${button.dataset.side} arrow`,
-            description: "The arrow points to the center of the selected action.",
+            description:
+              "The arrow points to the center of the selected action.",
             placement: {
               x: rect.left + rect.width / 2,
               y: rect.top + rect.height / 2,
@@ -42,7 +43,8 @@
         button.addEventListener("click", () => {
           showCaption({
             title: `${button.dataset.placement} bubble`,
-            description: "Named placements are useful when no action anchor is needed.",
+            description:
+              "Named placements are useful when no action anchor is needed.",
             placement: button.dataset.placement,
             pointer: "bubble",
           });
@@ -147,8 +149,12 @@
         <div class="actions">
           <button type="button" data-placement="top-left">Top left</button>
           <button type="button" data-placement="top-right">Top right</button>
-          <button type="button" data-placement="bottom-left">Bottom left</button>
-          <button type="button" data-placement="bottom-right">Bottom right</button>
+          <button type="button" data-placement="bottom-left">
+            Bottom left
+          </button>
+          <button type="button" data-placement="bottom-right">
+            Bottom right
+          </button>
         </div>
       </section>
     </main>

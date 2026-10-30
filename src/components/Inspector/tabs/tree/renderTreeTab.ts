@@ -15,16 +15,24 @@ function renderTreeRow({ row }: { row: InspectorTreeRowViewModel }): string {
     </div>`;
 }
 
-export function renderTreeTab({ model }: { model: InspectorViewModel }): string {
+export function renderTreeTab({
+  model,
+}: {
+  model: InspectorViewModel;
+}): string {
   return `
     <section class="tab-panel active" data-state="active">
       <div class="tree-controls">
         <label><span class="section-label">Depth</span>
           <select class="tree-select" data-tree-depth>
-            ${model.domTreeDepthOptions.map((option) => `
+            ${model.domTreeDepthOptions
+              .map(
+                (option) => `
               <option value="${option.depth}" ${option.depth === model.domTreeDepthLimit ? "selected" : ""}>
                 depth: ${option.depth} · nodes: ${option.visibleCount}
-              </option>`).join("")}
+              </option>`,
+              )
+              .join("")}
           </select>
         </label>
         <button class="tree-toggle ${model.domTreeIncludeChildren ? "active" : ""}" type="button" data-tree-children aria-pressed="${model.domTreeIncludeChildren ? "true" : "false"}">

@@ -102,9 +102,10 @@ export function renderListenerDiscovery({
   discovery: ListenerDiscovery;
 }): string {
   if (!discovery.listeners.length) {
-    const message = discovery.source === "unavailable"
-      ? "Native listener retrieval is unavailable in this browser."
-      : "No registered listeners found on the selected element or its ancestors.";
+    const message =
+      discovery.source === "unavailable"
+        ? "Native listener retrieval is unavailable in this browser."
+        : "No registered listeners found on the selected element or its ancestors.";
     return `<div class="listener-empty">${escapeHtml(message)}</div>`;
   }
 
@@ -208,9 +209,8 @@ function renderListenerSection({
       listener.passive ? "passive" : "active",
       ...(listener.once ? ["once"] : []),
     ];
-    const repeated = group.length > eventTypes.length
-      ? `${group.length} registrations`
-      : "";
+    const repeated =
+      group.length > eventTypes.length ? `${group.length} registrations` : "";
     const frameworkGenerated = looksFrameworkGenerated(listener.handler);
     return `
       <article class="listener-item">
@@ -258,12 +258,14 @@ function getOriginalListenerLocation(listener: DiscoveredListener): string {
   if (!listener.originalSource || isInlineDataUrl(listener.originalSource)) {
     return "";
   }
-  const line = typeof listener.originalLineNumber === "number"
-    ? `:${listener.originalLineNumber}`
-    : "";
-  const column = typeof listener.originalColumnNumber === "number"
-    ? `:${listener.originalColumnNumber + 1}`
-    : "";
+  const line =
+    typeof listener.originalLineNumber === "number"
+      ? `:${listener.originalLineNumber}`
+      : "";
+  const column =
+    typeof listener.originalColumnNumber === "number"
+      ? `:${listener.originalColumnNumber + 1}`
+      : "";
   const name = listener.originalName ? ` (${listener.originalName})` : "";
   return `${listener.originalSource}${line}${column}${name}`;
 }
@@ -274,12 +276,14 @@ function getListenerLocation(listener: DiscoveredListener): string {
       return "Inline generated script";
     }
 
-    const line = typeof listener.lineNumber === "number"
-      ? `:${listener.lineNumber + 1}`
-      : "";
-    const column = typeof listener.columnNumber === "number"
-      ? `:${listener.columnNumber + 1}`
-      : "";
+    const line =
+      typeof listener.lineNumber === "number"
+        ? `:${listener.lineNumber + 1}`
+        : "";
+    const column =
+      typeof listener.columnNumber === "number"
+        ? `:${listener.columnNumber + 1}`
+        : "";
     return `${listener.source}${line}${column}`;
   }
 
@@ -301,7 +305,6 @@ function isInlineDataUrl(value: string): boolean {
 function looksFrameworkGenerated(handler: string): boolean {
   const compact = handler.replace(/\s+/g, " ").trim();
   return (
-    compact.length < 90 ||
-    /^(?:function\s*\([a-z]\)|[a-z]=>)/.test(compact)
+    compact.length < 90 || /^(?:function\s*\([a-z]\)|[a-z]=>)/.test(compact)
   );
 }

@@ -1,7 +1,4 @@
-import {
-  getMatchingCssRules,
-  type CssRuleMatch,
-} from "../css/cssRules";
+import { getMatchingCssRules, type CssRuleMatch } from "../css/cssRules";
 import { getElementSelector } from "../../../../utils/selectors";
 import { absolutizeCssUrls } from "../css/cssUrls";
 
@@ -55,12 +52,7 @@ function collectFromMatchedRule(
   names: Set<string>,
   candidates: Map<string, VariableCandidate[]>,
 ): void {
-  collectVariableCandidates(
-    rule.rawCssText,
-    rule.baseUrl,
-    names,
-    candidates,
-  );
+  collectVariableCandidates(rule.rawCssText, rule.baseUrl, names, candidates);
 }
 
 export function getResolvedCssVariableEntries(

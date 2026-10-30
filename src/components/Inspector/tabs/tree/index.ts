@@ -1,5 +1,2 @@
-export {
-  buildDomTreeSnapshot,
-  getDomTreeRowsFromSnapshot,
-} from "./domTree";
+export { buildDomTreeSnapshot, getDomTreeRowsFromSnapshot } from "./domTree";
 export { renderTreeTab } from "./renderTreeTab";
