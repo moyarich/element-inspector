@@ -62,13 +62,16 @@ export default function createCssomRulesScenario(dependencies) {
       await inspectSelector(page, ".component");
       await openInspectorTab({ page, tabName: "css", screenshots });
 
-      const cssText = await page.evaluate(({ hostId, activePanel }) => {
-        const root = document.getElementById(hostId)?.shadowRoot;
-        return root?.querySelector(activePanel)?.textContent ?? "";
-      }, {
-        hostId: UI.inspector.hostId,
-        activePanel: UI.inspector.selector.activePanel,
-      });
+      const cssText = await page.evaluate(
+        ({ hostId, activePanel }) => {
+          const root = document.getElementById(hostId)?.shadowRoot;
+          return root?.querySelector(activePanel)?.textContent ?? "";
+        },
+        {
+          hostId: UI.inspector.hostId,
+          activePanel: UI.inspector.selector.activePanel,
+        },
+      );
 
       const expected = [
         "border-top: 11px solid red",

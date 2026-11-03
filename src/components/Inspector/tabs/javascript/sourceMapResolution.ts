@@ -10,8 +10,7 @@ const FETCH_RESOURCE_MESSAGE = "ELEMENT_INSPECTOR_FETCH_RESOURCE";
 const SOURCE_MAP_URL_PATTERN = /[#@]\s*sourceMappingURL\s*=\s*([^\s*]+)/g;
 
 type FetchResourceResponse =
-  | { ok: true; body: string; finalUrl?: string }
-  | { ok: false; error: string };
+  { ok: true; body: string; finalUrl?: string } | { ok: false; error: string };
 
 type GeneratedLocation = {
   source: string;

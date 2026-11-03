@@ -10,7 +10,11 @@ export async function getJavascriptInspectText(el: Element): Promise<string> {
   return formatCode(source, "javascript");
 }
 
-export function renderJavascriptTab({ model }: { model: InspectorViewModel }): string {
+export function renderJavascriptTab({
+  model,
+}: {
+  model: InspectorViewModel;
+}): string {
   const source = model.jsText ?? "";
 
   return `

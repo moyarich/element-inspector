@@ -18,10 +18,7 @@ import {
   getPreviewDocumentParts,
   type PreviewDocumentParts,
 } from "./tabs/preview";
-import {
-  buildDomTreeSnapshot,
-  getDomTreeRowsFromSnapshot,
-} from "./tabs/tree";
+import { buildDomTreeSnapshot, getDomTreeRowsFromSnapshot } from "./tabs/tree";
 import { getCssVariableText } from "./tabs/variables";
 
 import {

@@ -1,4 +1,3 @@
-
 import extensionApi from "webextension-polyfill";
 
 import { Inspector } from "../Inspector/Inspector";

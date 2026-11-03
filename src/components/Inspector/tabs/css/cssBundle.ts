@@ -9,10 +9,7 @@ import {
   type CssRuleMatch,
   type CssPropertyRuleMatch,
 } from "./cssRules";
-import {
-  absolutizeCssUrls,
-  extractCssAssetUrls,
-} from "./cssUrls";
+import { absolutizeCssUrls, extractCssAssetUrls } from "./cssUrls";
 
 const IGNORED_ANIMATION_NAMES = new Set([
   "none",
@@ -129,7 +126,11 @@ function formatCssProps(cssText: string): string {
     .join("\n");
 }
 
-function getDeclarationProperty({ declaration }: { declaration: string }): string {
+function getDeclarationProperty({
+  declaration,
+}: {
+  declaration: string;
+}): string {
   const colonIndex = declaration.indexOf(":");
 
   return colonIndex === -1
@@ -208,17 +209,17 @@ function pruneUnusedCustomPropertyDeclarations({
   }
 
   return rules.map((rule, index) => {
-      const declarations = declarationsByRule[index].filter((declaration) => {
-        const property = getDeclarationProperty({ declaration });
+    const declarations = declarationsByRule[index].filter((declaration) => {
+      const property = getDeclarationProperty({ declaration });
 
-        return !property.startsWith("--") || referencedNames.has(property);
-      });
-
-      return {
-        ...rule,
-        cssText: declarations.join("; "),
-      };
+      return !property.startsWith("--") || referencedNames.has(property);
     });
+
+    return {
+      ...rule,
+      cssText: declarations.join("; "),
+    };
+  });
 }
 
 export function getInlineCss(el: Element): string {
@@ -228,10 +229,7 @@ export function getInlineCss(el: Element): string {
     return "";
   }
 
-  const absoluteStyle = absolutizeCssUrls(
-    style,
-    el.ownerDocument.baseURI,
-  );
+  const absoluteStyle = absolutizeCssUrls(style, el.ownerDocument.baseURI);
 
   return `${getElementSelector(el)} {\n${formatCssProps(absoluteStyle)}\n}`;
 }
@@ -270,7 +268,7 @@ function renderRuleEntriesAtDepth({
     layerEntriesByPrefix.set(wrapperPrefix, layerEntries);
   }
 
-  for (let index = 0; index < entries.length; ) {
+  for (let index = 0; index < entries.length;) {
     const entry = entries[index];
     const wrapperPrefix = entry.rule.wrapperPrefixes[depth];
 
@@ -418,11 +416,7 @@ function renderCssScope({
   );
   const renderedRules = renderRuleEntries({ entries: ruleEntries });
 
-  const blocks = [
-    `/* ${heading} */`,
-    ...inlineBlocks,
-    renderedRules,
-  ];
+  const blocks = [`/* ${heading} */`, ...inlineBlocks, renderedRules];
 
   if (!inlineBlocks.length && !ruleEntries.length) {
     blocks.push("/* No accessible inline or matched stylesheet rules. */");
@@ -436,8 +430,7 @@ function renderWrappedAtRule(
   wrapperPrefixes: string[],
 ): string {
   return wrapperPrefixes.reduceRight(
-    (block, wrapperPrefix) =>
-      `${wrapperPrefix} {\n${indent(block, 2)}\n}`,
+    (block, wrapperPrefix) => `${wrapperPrefix} {\n${indent(block, 2)}\n}`,
     cssText,
   );
 }
@@ -648,10 +641,7 @@ function collectElementStyleDependencies(
   fontFamilies: Set<string>,
   computedAssetUrls: Set<string>,
 ): void {
-  addAnimationNamesFromStyleText(
-    element.getAttribute("style"),
-    animationNames,
-  );
+  addAnimationNamesFromStyleText(element.getAttribute("style"), animationNames);
 
   const computed = window.getComputedStyle(element);
   addAnimationNamesFromComputedStyle(computed, animationNames);
@@ -775,9 +765,7 @@ export function getCssBundle(rootEl: Element): {
   const renderedKeyframes = keyframesRules
     .map(renderKeyframesBlock)
     .join("\n\n");
-  const renderedFontFaces = fontFaceRules
-    .map(renderFontFaceBlock)
-    .join("\n\n");
+  const renderedFontFaces = fontFaceRules.map(renderFontFaceBlock).join("\n\n");
   const cssBeforePropertyRules = [
     renderedFontFaces,
     inlineBlocks.join("\n"),
@@ -805,10 +793,7 @@ export function getCssBundle(rootEl: Element): {
     .join("\n");
 
   const assetUrls = Array.from(
-    new Set([
-      ...extractCssAssetUrls(previewCssText),
-      ...computedAssetUrls,
-    ]),
+    new Set([...extractCssAssetUrls(previewCssText), ...computedAssetUrls]),
   ).sort();
   const sections: string[] = [];
   const assetManifest = renderAssetManifest(assetUrls);

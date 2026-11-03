@@ -1,8 +1,15 @@
-export { getCssVariableText, getResolvedCssVariableEntries } from "./cssVariables";
+export {
+  getCssVariableText,
+  getResolvedCssVariableEntries,
+} from "./cssVariables";
 import type { InspectorViewModel } from "../../InspectorPanelRenderer";
 import { renderCodeTab } from "../shared/renderCodeTab";
 
-export function renderVariablesTab({ model }: { model: InspectorViewModel }): string {
+export function renderVariablesTab({
+  model,
+}: {
+  model: InspectorViewModel;
+}): string {
   return renderCodeTab({
     source: model.cssVariableText ?? "",
     action: "copy-vars",
