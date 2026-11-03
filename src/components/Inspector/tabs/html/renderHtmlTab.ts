@@ -1,10 +1,15 @@
 import type { InspectorViewModel } from "../../InspectorPanelRenderer";
 import { renderCodeBlock } from "../shared/renderCodeBlock";
 
-export function renderHtmlTab({ model }: { model: InspectorViewModel }): string {
-  const source = model.htmlViewMode === "formatted"
-    ? (model.formattedHtmlText ?? model.rawHtmlText)
-    : model.rawHtmlText;
+export function renderHtmlTab({
+  model,
+}: {
+  model: InspectorViewModel;
+}): string {
+  const source =
+    model.htmlViewMode === "formatted"
+      ? (model.formattedHtmlText ?? model.rawHtmlText)
+      : model.rawHtmlText;
 
   return `
     <section class="tab-panel active" data-state="active">

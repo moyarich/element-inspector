@@ -22,8 +22,7 @@ export type PreviewDocumentPartsInput = {
 };
 
 export type PreviewDocumentInput =
-  | PreviewDocumentSourceInput
-  | PreviewDocumentPartsInput;
+  PreviewDocumentSourceInput | PreviewDocumentPartsInput;
 
 function getPreviewAncestorChain(element: Element): Element[] {
   const ancestors: Element[] = [];
@@ -79,7 +78,11 @@ function getPreviewHtml(rawHtml: string, element: Element): string {
   )}">\n${wrappedHtml}\n</div>`;
 }
 
-function getReferencedVariableNames({ cssText }: { cssText: string }): Set<string> {
+function getReferencedVariableNames({
+  cssText,
+}: {
+  cssText: string;
+}): Set<string> {
   const names = new Set<string>();
   const variablePattern = /var\(\s*(--[\w-]+)/g;
 

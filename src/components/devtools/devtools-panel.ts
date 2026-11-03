@@ -108,9 +108,7 @@ type DevtoolsPanelAction =
   | "copy-html";
 
 type DevtoolsSelectionSyncReason =
-  | "initial-native-selection"
-  | "native-selection-changed"
-  | "manual-sync";
+  "initial-native-selection" | "native-selection-changed" | "manual-sync";
 
 type DevtoolsEvalError = {
   isError?: boolean;
@@ -519,8 +517,7 @@ class DevtoolsInspectorPanel {
     }
 
     const typedMessage = message as
-      | InspectorStateChangedMessage
-      | ThemeChangedMessage;
+      InspectorStateChangedMessage | ThemeChangedMessage;
 
     if (typedMessage.type === MESSAGE.THEME_CHANGED) {
       if (typedMessage.theme === "light" || typedMessage.theme === "dark") {
@@ -930,7 +927,10 @@ class DevtoolsInspectorPanel {
 
       this.setActionDisabled({ action: "start-picking", disabled: isPicking });
       this.setActionDisabled({ action: "stop-picking", disabled: !isPicking });
-      this.setActionDisabled({ action: "copy-selector", disabled: !hasSelection });
+      this.setActionDisabled({
+        action: "copy-selector",
+        disabled: !hasSelection,
+      });
       this.setActionDisabled({ action: "copy-html", disabled: !hasSelection });
     }
 
@@ -951,7 +951,6 @@ class DevtoolsInspectorPanel {
         this.metaEl.textContent = `${dockText} · Active tab: ${state.activeTab}`;
       }
     }
-
   }
 
   private setActionDisabled({
@@ -1051,7 +1050,8 @@ class DevtoolsInspectorPanel {
 
     if (!this.listenerOutputEl) return;
     if (!state.hasSelection || !selector) {
-      this.listenerOutputEl.textContent = "Select an element to inspect its listeners.";
+      this.listenerOutputEl.textContent =
+        "Select an element to inspect its listeners.";
       return;
     }
 
@@ -1093,7 +1093,10 @@ class DevtoolsInspectorPanel {
 
       if (error?.isError || error?.isException) {
         const devtoolsError = new Error(
-          error.value || error.description || error.code || "DevTools evaluation failed.",
+          error.value ||
+            error.description ||
+            error.code ||
+            "DevTools evaluation failed.",
         );
 
         devtoolsError.name = "DevToolsEvalError";

@@ -11,19 +11,13 @@ const demoArtifactsDirectory = path.join(
   "demo",
 );
 const readmeMediaDirectory = path.join(projectDirectory, "media");
-const source = path.join(
-  demoArtifactsDirectory,
-  "element-inspector-demo.webm",
-);
+const source = path.join(demoArtifactsDirectory, "element-inspector-demo.webm");
 const destination = path.join(
   readmeMediaDirectory,
   "element-inspector-demo.gif",
 );
 
-const fps = Math.max(
-  1,
-  Number(process.env.ELEMENT_INSPECTOR_GIF_FPS ?? 12),
-);
+const fps = Math.max(1, Number(process.env.ELEMENT_INSPECTOR_GIF_FPS ?? 12));
 const width = Math.max(
   320,
   Number(process.env.ELEMENT_INSPECTOR_GIF_WIDTH ?? 960),

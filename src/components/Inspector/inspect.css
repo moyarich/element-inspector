@@ -742,7 +742,12 @@
   padding-left: 30px;
   display: block;
   color: var(--muted-foreground);
-  font: 10px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font:
+    10px/1.4 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
   overflow-wrap: anywhere;
   white-space: normal;
   user-select: text;
