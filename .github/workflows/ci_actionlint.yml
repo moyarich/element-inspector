@@ -1,0 +1,19 @@
+name: CI / Actionlint
+on:
+  push:
+    branches: [main]
+    paths: &actionlint_paths
+      - ".github/workflows/**"
+      - ".github/actionlint.yaml"
+  pull_request:
+    paths: *actionlint_paths
+  workflow_call:
+  workflow_dispatch:
+concurrency:
+  group: ci-${{ github.repository }}-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  actionlint:
+    uses: moyarich/reusable-workflows/.github/workflows/reusable_actionlint.yml@main
